@@ -35,7 +35,33 @@ function insertTask(desc)
     return; 
 }
 
-//function to check whether the task is checked or not. if not checked marks it as true. 
+//function that changes the checked value from false to true. 
+function markChecked(id)
+{
+  for(let i = 0 ; i < tasks.length ; i++)
+  {
+    if(id === tasks[i].id)
+    {
+        if(tasks[i].checked === true)
+        {
+            return; 
+        }
+        else
+        {
+          console.log("Checking task...");
+          tasks[i].checked = true;
+          console.log("Checking done!");
+        }
+
+        return;
+    }
+  }
+
+  console.log("Task not found!");
+  return; 
+}
+
+//function that checks if a task is marked true or false and returns the result.
 function isChecked(id)
 {
   for(let i = 0 ; i < tasks.length ; i++)
@@ -43,9 +69,16 @@ function isChecked(id)
     if(id === tasks[i].id)
     {
         console.log("Checking task...");
-        tasks[i].checked = true;
-        console.log("Checking done!");
-        return;
+        if(tasks[i].checked === true)
+        {
+            console.log("Checking done!");
+            return true; 
+        }
+        else
+        {
+          console.log("Checking done!");
+          return false;  
+        }        
     }
   }
 
@@ -56,23 +89,24 @@ function isChecked(id)
 //function to remove a task from the list of tasks. 
 function removeTask(id)
 {
-    for(let i = 0 ; i < tasks.length ; i++)
-  {
-    if(id === tasks[i].id)
-    {
-       console.log("Deleting task...");
-       tasks.splice(i, 1);
-       console.log("Task deleted successfully!");
-       return;
-    }
-  }
+const originalSize = tasks.length; 
 
-  console.log("Task not found!");
-  return; 
+tasks = tasks.filter(tasks => tasks.id !== id);
+
+if(originalSize > tasks.length)
+{
+    console.log("Task deleted successfully!");
+    return;
 }
+
+console.log("An error occured while trying to delete the task!");
+}
+ 
 
 listTasks();
 insertTask("Milk drank");
-isChecked(2);
+console.log("Task marked as: ",isChecked(2));
+markChecked(2);
+console.log("Task marked as: ",isChecked(2));
 removeTask(1);
 listTasks();
