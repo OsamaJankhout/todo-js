@@ -1,0 +1,112 @@
+//this is the task list where we will be storing all of our tasks
+let tasks = [
+    {id: 1, desc: "Buy milk", checked: false},
+    {id: 2, desc: "Go home", checked: false},
+    {id: 3, desc: "Drink milk", checked: false}
+]
+
+//an incremental counter for inserting new tasks
+let nextId = 4;
+
+//lists all the task(s) information 
+function listTasks()
+{
+    if(tasks.length === 0)
+    {
+        console.log("The list is empty!");
+        return;
+    }
+
+    for(let i = 0 ; i < tasks.length ; i++)
+    {
+        console.log("ID: ", tasks[i].id, "Desc: ", tasks[i].desc, "Checked: ", tasks[i].checked);
+    }
+
+    return; 
+}
+
+//insertion function to add new entries to the task list
+function insertTask(desc)
+{   
+    console.log("Inserting new task...");
+    tasks.push({id: nextId, desc: desc, checked: false}) ;
+    nextId = nextId + 1;
+    console.log("Task inserted successfully!");
+    return; 
+}
+
+//function that changes the checked value from false to true. 
+function markChecked(id)
+{
+  for(let i = 0 ; i < tasks.length ; i++)
+  {
+    if(id === tasks[i].id)
+    {
+        if(tasks[i].checked === true)
+        {
+            return; 
+        }
+        else
+        {
+          console.log("Checking task...");
+          tasks[i].checked = true;
+          console.log("Checking done!");
+        }
+
+        return;
+    }
+  }
+
+  console.log("Task not found!");
+  return; 
+}
+
+//function that checks if a task is marked true or false and returns the result.
+function isChecked(id)
+{
+  for(let i = 0 ; i < tasks.length ; i++)
+  {
+    if(id === tasks[i].id)
+    {
+        console.log("Checking task...");
+        if(tasks[i].checked === true)
+        {
+            console.log("Checking done!");
+            return true; 
+        }
+        else
+        {
+          console.log("Checking done!");
+          return false;  
+        }        
+    }
+  }
+
+  console.log("Task not found!");
+  return; 
+}
+
+//function to remove a task from the list of tasks. 
+function removeTask(id)
+{
+const originalSize = tasks.length; 
+
+tasks = tasks.filter(tasks => tasks.id !== id); //if the condition is true, keep the item. if not remove the item. 
+
+if(originalSize > tasks.length)
+{
+    console.log("Task deleted successfully!");
+    return;
+}
+
+console.log("An error occured while trying to delete the task!");
+}
+ 
+
+listTasks();
+insertTask("Milk drank");
+console.log("Task marked as: ",isChecked(2));
+markChecked(2);
+console.log("Task marked as: ",isChecked(2));
+removeTask(1);
+listTasks();
