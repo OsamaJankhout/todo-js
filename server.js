@@ -1,3 +1,4 @@
+
 //test
 console.log("Server has started");
 
@@ -11,8 +12,13 @@ const pool = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const logAction = require('./logs');
+const redisClient = require('./redis-client')
 
 app.use(express.json());
+
+(async () => { 
+    await redisClient.connect();
+})();
 
 //middleware for security
 const authMiddleware = (req, res, next) => {
@@ -52,9 +58,11 @@ app.get("/", (req, res) => {
 
 app.get('/tasks', async (req, res) => {
     try {
+        const cachedTasks = await redisClient.get("tasks:all"); if(cachedTasks) { console.log("Serving /tasks from the redis cache."); return res.status(200).json(JSON.parse(cachedTasks)); }
+        console.log("Serving /tasks from PostgresSQL");
         const result = await pool.query('SELECT * FROM tasks ORDER BY taskid ASC');
-
-        await logAction(
+        await redisClient.setEx("tasks:all", 60, JSON.stringify(result.rows));
+         logAction(
             'GET_TASKS',
             req.method,
             req.originalUrl,
@@ -64,7 +72,7 @@ app.get('/tasks', async (req, res) => {
 
         res.status(200).json(result.rows);
     } catch (err) {
-        await logAction(
+         logAction(
             'GET_TASKS',
             req.method,
             req.originalUrl,
